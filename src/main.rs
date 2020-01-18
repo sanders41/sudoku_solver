@@ -13,7 +13,7 @@ fn main() {
         vec!(0, 8, 0, 0, 3, 0, 5, 0, 0,),
     );
 
-    game::print_original_board(&board);
+    game::print_board(&board);
     println!("#################################################");
     game::solve_puzzle(&mut board, true);
 }
