@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 fn find_empty(board: &[Vec<u8>]) -> Option<(u8, u8)> {
-    for row in 0..board.len() {
+    for (row, _) in board.iter().enumerate() {
         for col in 0..board[row].len() {
             if board[row][col] == 0 {
                 return Some((row as u8, col as u8,));
@@ -9,7 +9,7 @@ fn find_empty(board: &[Vec<u8>]) -> Option<(u8, u8)> {
         }
     }
 
-    return None;
+    None
 }
 
 fn get_solution(solved: bool, board: &mut Vec<Vec<u8>>) -> (bool, &Vec<Vec<u8>>) {
@@ -26,7 +26,7 @@ fn get_solution(solved: bool, board: &mut Vec<Vec<u8>>) -> (bool, &Vec<Vec<u8>>)
         if is_valid_move(board, &(row, col,), i) {
             board[row][col] = i;
 
-            if get_solution(solved, board).0 == true {
+            if get_solution(solved, board).0 {
                 return (true, board,);
             }
 
@@ -34,7 +34,7 @@ fn get_solution(solved: bool, board: &mut Vec<Vec<u8>>) -> (bool, &Vec<Vec<u8>>)
         }
     }
 
-    return (false, board);
+    (false, board)
 }
 
 pub fn print_board(board: &[Vec<u8>]) {
@@ -71,10 +71,10 @@ pub fn solve_puzzle(board: &mut Vec<Vec<u8>>, print_solution: bool) -> Option<&V
 
     if !is_solved {
         println!("Puzzle is unsolvable");
-        return None;
+        None
     } else if is_solved {
-        for i in 0..solved_board.len() { 
-            if solved_board[i].contains(&(0 as u8)) {
+        for pos in solved_board { 
+            if pos.contains(&(0)) {
                 println!("Puzzle is unsolvable");
                 return None
             }
@@ -84,9 +84,9 @@ pub fn solve_puzzle(board: &mut Vec<Vec<u8>>, print_solution: bool) -> Option<&V
             print_board(&solved_board);
         }
 
-        return Some(solved_board);
+        Some(solved_board)
     } else {
-        return None;
+        None
     }
 }
 
@@ -111,7 +111,7 @@ fn is_valid_move(board: &[Vec<u8>], position: &(usize, usize), num: u8) -> bool 
         }
     }
 
-    return true;
+    true
 }
 
 fn is_valid_board(board: &[Vec<u8>]) -> bool {
@@ -123,17 +123,17 @@ fn is_valid_board(board: &[Vec<u8>]) -> bool {
         return false;
     }
 
-    for i in 0..rows{
+    for row in board.iter().take(rows){
         // make sure all the values in a row other than 0 are unique
         //let filtered: Vec<u8> = board[i].iter().cloned().filter(|&x| x!=0).collect();
         
-        if !is_unique_vector(&board[i]) {
+        if !is_unique_vector(&row) {
             return false;
         }
 
         // make sure all numbers are between 0 and 9
-        for j in 0..cols {
-            if board[i][j] > 9 {
+        for col in row.iter().take(cols) {
+            if col > &9 {
                 return false;
             }
         }
@@ -141,9 +141,9 @@ fn is_valid_board(board: &[Vec<u8>]) -> bool {
 
     // check for the same number, other than 0, in a column
     let mut transposed_board: Vec<Vec<u8>> = vec![Vec::with_capacity(rows); cols];
-    for i in 0..rows {
+    for row in board.iter().take(rows) {
         for j in 0..cols {
-            transposed_board[j].push(board[i][j]);
+            transposed_board[j].push(row[j]);
         }
     }
 
@@ -169,10 +169,10 @@ fn is_valid_board(board: &[Vec<u8>]) -> bool {
         }
     }
 
-    return true;
+    true
 }
 
-fn is_unique_vector(vector: &Vec<u8>) -> bool {
+fn is_unique_vector(vector: &[u8]) -> bool {
     let filtered: Vec<u8> = vector.iter().cloned().filter(|&x| x!=0).collect();
     let mut unique = HashSet::new();
 
